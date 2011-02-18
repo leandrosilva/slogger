@@ -2,6 +2,12 @@
 
 Slogger is a Ruby library to help work with standard Ruby Syslog library.
 
+== Install
+
+  # https://rubygems.org/gems/slogger
+  
+  gem install slogger
+
 == Features
 
 === Slogger::Logger
