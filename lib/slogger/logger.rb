@@ -63,11 +63,9 @@ module Slogger
       @facility_as_int = FACILITY[facility]
     end
     
-    def method_missing(name, *args)
-      if LEVEL.key? name
-        log(name, args[0])
-      else
-        super name, *args
+    LEVEL.each_key do |level|
+      define_method level do |message|
+        log(level, message)
       end
     end
     
