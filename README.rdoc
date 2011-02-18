@@ -4,11 +4,11 @@ Slogger is a Ruby library to help work with standard Ruby Syslog library.
 
 == Features
 
-=== 1. Slogger::Logger
+=== Slogger::Logger
 
 A more friendly wrapper on Ruby's Syslog.
     
-Sample:
+Sample: simple message log
     
   slogger = Slogger::Logger.new "sample_app", :debug, :local0 
   slogger.info "A good info"
@@ -16,7 +16,16 @@ Sample:
   
   # and after, look at the syslog file of your SO  ;)
 
-=== 2. Slogger::Rack::RequestLogger
+Sample: message log preceded by spent time
+
+  slogger = Slogger::Logger.new "sample_app", :debug, :local0 
+  slogger.info "A really good info preceded by spent time" do
+    # do something
+  end
+
+  # and after, look at the syslog file of your SO  ;)
+
+=== Slogger::Rack::RequestLogger
 
 A Rack middleware to log incoming requests.
 
