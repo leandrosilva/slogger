@@ -40,4 +40,14 @@ describe Slogger::Logger do
       subject.info "INFO message"
     end
   end
+    
+  describe "when a block is passed to log method" do
+    subject { Slogger::Logger.new "test_app", :debug, :local0 }
+    
+    it "it should add spent time to the message" do
+      subject.info "a block wrapped by log" do
+        sleep(10)
+      end
+    end
+  end
 end

@@ -64,16 +64,26 @@ module Slogger
     end
     
     LEVEL.each_key do |level|
-      define_method level do |message|
-        log(level, message)
+      define_method level do |message, &block|
+        log(level, message, &block)
       end
     end
     
     private
     
-    def log(level, message)
+    def log(level, message, &block)
       return if LEVEL[level] > @level_as_int
 
+      if block_given?
+        began_at = Time.now
+        
+        yield
+        
+        now = Time.now
+        end_at = now - began_at
+        message = "[#{end_at}s] #{message}"
+      end
+      
       Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send level, message }
     end
   end
