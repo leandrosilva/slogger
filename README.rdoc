@@ -4,7 +4,7 @@ Slogger is a Ruby library to help work with standard Ruby Syslog library.
 
 == Install
 
-  # https://rubygems.org/gems/slogger
+Slogger is hosted on RubyGems (https://rubygems.org/gems/slogger), so to install it is really easy.
   
   gem install slogger
 
