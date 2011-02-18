@@ -6,7 +6,7 @@ Slogger is a Ruby library to help work with standard Ruby Syslog library.
 
 Slogger is hosted on RubyGems (https://rubygems.org/gems/slogger), so to install it is really easy.
   
-  gem install slogger
+  $ gem install slogger
 
 == Features
 
@@ -37,12 +37,12 @@ A Rack middleware to log incoming requests.
 
 Sample:
 
-    configure do
-      slogger = Slogger::Logger.new "sample_app", :debug, :local0
-      use Slogger::Rack::RequestLogger, slogger
-    end
+  configure do
+    slogger = Slogger::Logger.new "sample_app", :debug, :local0
+    use Slogger::Rack::RequestLogger, slogger
+  end
 
-    # and after, look at the syslog file of your SO  ;)
+  # and after, look at the syslog file of your SO  ;)
     
 == Future
 
@@ -52,4 +52,4 @@ For now is it.
 
 == Copyright
 
-Copyright (c) 2011 Leandro Silva (CodeZone). Blog: http://leandrosilva.com.br.
+Copyright (c) 2011 Leandro Silva (CodeZone).
