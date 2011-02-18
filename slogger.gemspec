@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{slogger}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leandro Silva"]
-  s.date = %q{2011-02-17}
+  s.date = %q{2011-02-18}
   s.description = %q{Slogger is a Ruby library to help work with standard Ruby Syslog library. Yeah! Just it.}
   s.email = %q{leandrodoze@gmail.com}
   s.extra_rdoc_files = [
