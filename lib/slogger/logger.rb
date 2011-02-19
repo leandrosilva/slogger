@@ -3,7 +3,7 @@ module Slogger
   # The wrapper for standard Ruby Syslog library.
   #
   class Logger
-    LEVEL = {
+    SEVERITY = {
       :crit    => 0,
       :emerg   => 1,
       :alert   => 2,
@@ -36,48 +36,48 @@ module Slogger
       :local7   => Syslog::LOG_LOCAL7
     }
     
-    attr_reader :app_name, :level, :facility
+    attr_reader :app_name, :severity, :facility
 
     #
     # To build a Slogger::Logger instance.
     #
     # +app_name+::  The appliaction name to be logged
-    # +level+::     The log level: :crit, :emerg, :alert, :err, :warning, :notice,
+    # +severity+::  The log severity: :crit, :emerg, :alert, :err, :warning, :notice,
     #                 :info, or :debug. It can be changed at anytime.
     # +facility+::  A typical syslog facility: :user, :mail, :daemon, :auth,
     #                 :syslog, :lpr, :news, :uucp, :cron, :authpriv, :ftp,
     #                 :local0, :local1, :local2, :local3, :local4, :local5,
     #                 :local6, or :local7
     #
-    # Raises an ArgumentError if app_name, level, or facility is nil.
+    # Raises an ArgumentError if app_name, severity, or facility is nil.
     #
-    def initialize(app_name, level, facility)
+    def initialize(app_name, severity, facility)
       raise ArgumentError, "The 'app_name' parameter is required" unless app_name
-      raise ArgumentError, "The 'level' parameter is required" unless level
+      raise ArgumentError, "The 'severity' parameter is required" unless severity
       raise ArgumentError, "The 'facility' parameter is required" unless facility
       
       @app_name = app_name
-      @level = level
-      @level_as_int = LEVEL[level]
+      @severity = severity
+      @severity_as_int = SEVERITY[severity]
       @facility = facility
       @facility_as_int = FACILITY[facility]
     end
     
-    LEVEL.each_key do |level|
-      define_method level do |message, &block|
-        log(level, message, &block)
+    SEVERITY.each_key do |severity|
+      define_method severity do |message, &block|
+        log(severity, message, &block)
       end
     end
     
-    def level=(value)
-      @level = value
-      @level_as_int = LEVEL[value]
+    def severity=(value)
+      @severity = value
+      @severity_as_int = SEVERITY[value]
     end
     
     private
     
-    def log(level, message, &block)
-      return if LEVEL[level] > @level_as_int
+    def log(severity, message, &block)
+      return if SEVERITY[severity] > @severity_as_int
 
       if block_given?
         began_at = Time.now
@@ -89,7 +89,7 @@ module Slogger
         message = "[#{end_at}s] #{message}"
       end
       
-      Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send level, message }
+      Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send severity, message }
     end
   end
 end

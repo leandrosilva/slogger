@@ -8,8 +8,8 @@ describe Slogger::Logger do
       subject.app_name.should == "test_app"
     end
     
-    it "should have a level attribute" do
-      subject.level.should == :debug
+    it "should have a severity attribute" do
+      subject.severity.should == :debug
     end
     
     it "should have a facility attribute" do
@@ -22,7 +22,7 @@ describe Slogger::Logger do
       lambda { Slogger::Logger.new nil, :debug, :local0 }.should raise_error
     end
 
-    it "should raise ArgumentError if doen't have level" do
+    it "should raise ArgumentError if doen't have severity" do
       lambda { Slogger::Logger.new "test_app", nil, :local0 }.should raise_error
     end
 
@@ -31,16 +31,16 @@ describe Slogger::Logger do
     end
   end
 
-  describe "level setup" do
-    it "should be possible to change the level attribute" do
-      subject.level.should be :debug
-      subject.level = :warning
-      subject.level.should be :warning
-      subject.level = :info
-      subject.level.should be :info
+  describe "severity setup" do
+    it "should be possible to change the severity attribute" do
+      subject.severity.should be :debug
+      subject.severity = :warning
+      subject.severity.should be :warning
+      subject.severity = :info
+      subject.severity.should be :info
     end
   
-    describe "when in WARNING level" do
+    describe "when in WARNING severity" do
       subject { Slogger::Logger.new "test_app", :warning, :local0 }
 
       it "should log WARNING messages" do
@@ -57,9 +57,9 @@ describe Slogger::Logger do
         subject.info "INFO message"
       end
       
-      describe "but when level is changed to INFO" do
+      describe "but when severity is changed to INFO" do
         it "should log INFO messages" do
-          subject.level = :info
+          subject.severity = :info
 
           Syslog.stub!(:info).with(anything).and_return(Syslog)
           Syslog.should_receive(:info).and_return(Syslog)
