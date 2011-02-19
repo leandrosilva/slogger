@@ -18,11 +18,14 @@ Sample: simple message log
     
   require "slogger"
   
+  # "sample_name": application name
+  # :info        : severity level
+  # :local0      : facility
   slogger = Slogger::Logger.new "sample_app", :info, :local0 
   slogger.info "A good info"
   slogger.debug "A deep info (oops!)"  # it'll not be logged
   
-  slogger.level = :debug
+  slogger.severity = :debug
   slogger.debug "A deep info (yay!)"   # now it'll be logged
   
   # and after, look at the syslog file of your SO  ;)
