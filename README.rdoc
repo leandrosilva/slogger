@@ -16,14 +16,21 @@ A more friendly wrapper on Ruby's Syslog.
     
 Sample: simple message log
     
-  slogger = Slogger::Logger.new "sample_app", :debug, :local0 
+  require "slogger"
+  
+  slogger = Slogger::Logger.new "sample_app", :info, :local0 
   slogger.info "A good info"
-  slogger.debug "A deep info"
+  slogger.debug "A deep info (oops!)"  # it'll not be logged
+  
+  slogger.level = :debug
+  slogger.debug "A deep info (yay!)"   # now it'll be logged
   
   # and after, look at the syslog file of your SO  ;)
 
 Sample: message log preceded by spent time
 
+  require "slogger"
+  
   slogger = Slogger::Logger.new "sample_app", :debug, :local0 
   slogger.info "A really good info preceded by spent time" do
     # do something
@@ -37,6 +44,8 @@ A Rack middleware to log incoming requests.
 
 Sample:
 
+  require "slogger"
+  
   configure do
     slogger = Slogger::Logger.new "sample_app", :debug, :local0
     use Slogger::Rack::RequestLogger, slogger

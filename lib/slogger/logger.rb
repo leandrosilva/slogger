@@ -43,7 +43,7 @@ module Slogger
     #
     # +app_name+::  The appliaction name to be logged
     # +level+::     The log level: :crit, :emerg, :alert, :err, :warning, :notice,
-    #                 :info, or :debug.
+    #                 :info, or :debug. It can be changed at anytime.
     # +facility+::  A typical syslog facility: :user, :mail, :daemon, :auth,
     #                 :syslog, :lpr, :news, :uucp, :cron, :authpriv, :ftp,
     #                 :local0, :local1, :local2, :local3, :local4, :local5,
@@ -67,6 +67,11 @@ module Slogger
       define_method level do |message, &block|
         log(level, message, &block)
       end
+    end
+    
+    def level=(value)
+      @level = value
+      @level_as_int = LEVEL[value]
     end
     
     private

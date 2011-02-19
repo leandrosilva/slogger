@@ -1,12 +1,20 @@
 require File.join(File.dirname(__FILE__), "..", "/spec_helper")
 
 describe Slogger::Logger do
-  describe "valid state" do
-    subject { Slogger::Logger.new "test_app", :debug, :local0 }
+  subject { Slogger::Logger.new "test_app", :debug, :local0 }
 
-    its(:app_name) { should == "test_app" }
-    its(:level) { should == :debug }
-    its(:facility) { should == :local0 }
+  describe "valid state" do
+    it "should have an app_name attribute" do
+      subject.app_name.should == "test_app"
+    end
+    
+    it "should have a level attribute" do
+      subject.level.should == :debug
+    end
+    
+    it "should have a facility attribute" do
+      subject.facility.should == :local0
+    end
   end
   
   describe "invalid state" do
@@ -22,31 +30,52 @@ describe Slogger::Logger do
       lambda { Slogger::Logger.new "test_app", :debug, nil }.should raise_error
     end
   end
-  
-  describe "when in warning level" do
-    subject { Slogger::Logger.new "test_app", :warning, :local0 }
 
-    it "should log WARNING messages" do
-      Syslog.stub!(:warning).with(anything).and_return(Syslog)
-      Syslog.should_receive(:warning).and_return(Syslog)
-
-      subject.warning "WARNING message"
+  describe "level setup" do
+    it "should be possible to change the level attribute" do
+      subject.level.should be :debug
+      subject.level = :warning
+      subject.level.should be :warning
+      subject.level = :info
+      subject.level.should be :info
     end
-    
-    it "shouldn't log INFO messages" do
-      Syslog.stub!(:info).with(anything).and_return(Syslog)
-      Syslog.should_not_receive(:info).and_return(Syslog)
+  
+    describe "when in WARNING level" do
+      subject { Slogger::Logger.new "test_app", :warning, :local0 }
 
-      subject.info "INFO message"
+      it "should log WARNING messages" do
+        Syslog.stub!(:warning).with(anything).and_return(Syslog)
+        Syslog.should_receive(:warning).and_return(Syslog)
+
+        subject.warning "WARNING message"
+      end
+    
+      it "shouldn't log INFO messages" do
+        Syslog.stub!(:info).with(anything).and_return(Syslog)
+        Syslog.should_not_receive(:info).and_return(Syslog)
+
+        subject.info "INFO message"
+      end
+      
+      describe "but when level is changed to INFO" do
+        it "should log INFO messages" do
+          subject.level = :info
+
+          Syslog.stub!(:info).with(anything).and_return(Syslog)
+          Syslog.should_receive(:info).and_return(Syslog)
+          
+          subject.info "INFO message"
+        end
+      end
     end
   end
     
-  describe "when a block is passed to log method" do
-    subject { Slogger::Logger.new "test_app", :debug, :local0 }
-    
-    it "it should add spent time to the message" do
-      subject.info "a block wrapped by log" do
-        sleep(10)
+  describe "spent time" do
+    describe "when a block is passed to log method" do
+      it "should add spent time to the message" do
+        subject.info "a block wrapped by log" do
+          sleep(2)
+        end
       end
     end
   end
