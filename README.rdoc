@@ -18,9 +18,12 @@ Sample: simple message log
     
   require "slogger"
   
+  # So in this sample:
+  #
   # "sample_name": application name
   # :info        : severity level
   # :local0      : facility
+  
   slogger = Slogger::Logger.new "sample_app", :info, :local0 
   slogger.info "A good info"
   slogger.debug "A deep info (oops!)"  # it'll not be logged
