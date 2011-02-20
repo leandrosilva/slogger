@@ -55,6 +55,9 @@ module Slogger
       raise ArgumentError, "The 'app_name' parameter is required" unless app_name
       raise ArgumentError, "The 'severity' parameter is required" unless severity
       raise ArgumentError, "The 'facility' parameter is required" unless facility
+
+      raise ArgumentError, "The 'severity' parameter is invalid. Inspect the SEVERITY constant." unless SEVERITY[severity]
+      raise ArgumentError, "The 'facility' parameter is invalid. Inspect the FACILITY constant." unless FACILITY[facility]
       
       @app_name = app_name
       @severity = severity

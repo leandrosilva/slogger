@@ -29,6 +29,14 @@ describe Slogger::Logger do
     it "should raise ArgumentError if doen't have facility" do
       lambda { Slogger::Logger.new "test_app", :debug, nil }.should raise_error
     end
+    
+    it "should raise ArgumentError if severity level is invalid" do
+      lambda { Slogger::Logger.new "test_app", :junk, :local0 }.should raise_error
+    end
+    
+    it "should raise ArgumentError if facility is invalid" do
+      lambda { Slogger::Logger.new "test_app", :describe, :junk }.should raise_error
+    end
   end
 
   describe "severity setup" do
