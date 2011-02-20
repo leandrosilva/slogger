@@ -52,12 +52,12 @@ module Slogger
     # Raises an ArgumentError if app_name, severity, or facility is nil.
     #
     def initialize(app_name, severity, facility)
-      raise ArgumentError, "The 'app_name' parameter is required" unless app_name
-      raise ArgumentError, "The 'severity' parameter is required" unless severity
-      raise ArgumentError, "The 'facility' parameter is required" unless facility
+      raise_argument_error_to_required_parameter "app_name" unless app_name
+      raise_argument_error_to_required_parameter "severity" unless severity
+      raise_argument_error_to_required_parameter "facility" unless facility
 
-      raise ArgumentError, "The 'severity' parameter is invalid. Inspect the SEVERITY constant." unless SEVERITY[severity]
-      raise ArgumentError, "The 'facility' parameter is invalid. Inspect the FACILITY constant." unless FACILITY[facility]
+      raise_argument_error_to_invalid_parameter "severity", "SEVERITY" unless SEVERITY[severity]
+      raise_argument_error_to_invalid_parameter "facility", "FACILITY" unless FACILITY[facility]
       
       @app_name = app_name
       @severity = severity
@@ -73,6 +73,8 @@ module Slogger
     end
     
     def severity=(value)
+      raise_argument_error_to_invalid_parameter "severity", "SEVERITY" unless SEVERITY[value]
+      
       @severity = value
       @severity_as_int = SEVERITY[value]
     end
@@ -93,6 +95,14 @@ module Slogger
       end
       
       Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send severity, message }
+    end
+    
+    def raise_argument_error_to_required_parameter(param)
+      raise ArgumentError, "The '#{param}' parameter is required."
+    end
+
+    def raise_argument_error_to_invalid_parameter(param, options)
+      raise ArgumentError, "The '#{param}' parameter is invalid. Inspect the #{options} constant to know the options."
     end
   end
 end

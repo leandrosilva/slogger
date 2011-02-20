@@ -18,15 +18,15 @@ describe Slogger::Logger do
   end
   
   describe "invalid state" do
-    it "should raise ArgumentError if doen't have app_name" do
+    it "should raise ArgumentError if doesn't have app_name" do
       lambda { Slogger::Logger.new nil, :debug, :local0 }.should raise_error
     end
 
-    it "should raise ArgumentError if doen't have severity" do
+    it "should raise ArgumentError if doesn't have severity" do
       lambda { Slogger::Logger.new "test_app", nil, :local0 }.should raise_error
     end
 
-    it "should raise ArgumentError if doen't have facility" do
+    it "should raise ArgumentError if doesn't have facility" do
       lambda { Slogger::Logger.new "test_app", :debug, nil }.should raise_error
     end
     
@@ -40,15 +40,21 @@ describe Slogger::Logger do
   end
 
   describe "severity setup" do
-    it "should be possible to change the severity attribute" do
+    it "should be possible to change severity attribute" do
       subject.severity.should be :debug
       subject.severity = :warning
       subject.severity.should be :warning
       subject.severity = :info
       subject.severity.should be :info
     end
+      
+    it "should raise ArgumentError if try to change severity attribute to a invalid one" do
+      lambda { subject.severity = :junk }.should raise_error
+    end
+  end
   
-    describe "when in WARNING severity" do
+  describe "logging" do
+    describe "when is in WARNING severity" do
       subject { Slogger::Logger.new "test_app", :warning, :local0 }
 
       it "should log WARNING messages" do
@@ -76,9 +82,7 @@ describe Slogger::Logger do
         end
       end
     end
-  end
-    
-  describe "spent time" do
+
     describe "when a block is passed to log method" do
       it "should add spent time to the message" do
         subject.info "a block wrapped by log" do
