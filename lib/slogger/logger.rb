@@ -85,6 +85,7 @@ module Slogger
       return if SEVERITY[severity] > @severity_as_int
 
       if block_given?
+        # TODO use Benchmark.measure
         began_at = Time.now
         
         yield
