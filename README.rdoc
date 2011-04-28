@@ -65,6 +65,54 @@ I don't know. I think in adding more stuff sometime in the future. Let's see.
 
 For now is it.
 
+== Quick view on Syslog RFC 5424
+
+If you want to get a look at RFC 5424, which I really recommend, you can go to:
+
+http://tools.ietf.org/html/rfc5424
+
+According to that:
+
+  # Message Severities
+  #
+  # - Emergency: system is unusable
+  # - Alert: action must be taken immediately
+  # - Critical: critical conditions
+  # - Error: error conditions
+  # - Warning: warning conditions
+  # - Notice: normal but significant condition
+  # - Informational: informational messages
+  # - Debug: debug-level messages
+
+And...
+
+  # Message Facilities
+  #
+  # - kernel messages
+  # - user-level messages
+  # - mail system
+  # - system daemons
+  # - security/authorization messages
+  # - messages generated internally by syslogd
+  # - line printer subsystem
+  # - network news subsystem
+  # - UUCP subsystem
+  # - clock daemon
+  # - security/authorization messages
+  # - FTP daemon
+  # - NTP subsystem
+  # - log audit
+  # - log alert
+  # - clock daemon (note 2)
+  # - local use 0  (local0)
+  # - local use 1  (local1)
+  # - local use 2  (local2)
+  # - local use 3  (local3)
+  # - local use 4  (local4)
+  # - local use 5  (local5)
+  # - local use 6  (local6)
+  # - local use 7  (local7)
+
 == Copyright
 
 Copyright (c) 2011 Leandro Silva (CodeZone).
