@@ -5,7 +5,7 @@ module Slogger
   class Logger
     
     #
-    # Syslog Message Severities
+    # Syslog Message Severities:
     #
     # - Emergency: system is unusable
     # - Alert: action must be taken immediately
@@ -28,7 +28,7 @@ module Slogger
     }
     
     #
-    # Syslog Message Facilities
+    # Syslog Message Facilities:
     #
     # - kernel messages
     # - user-level messages
@@ -110,7 +110,7 @@ module Slogger
     
     SEVERITY.each_key do |severity|
       define_method severity do |message, &block|
-        log(severity, message, &block)
+        log severity, message, &block
       end
     end
     
