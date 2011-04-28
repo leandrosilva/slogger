@@ -3,18 +3,60 @@ module Slogger
   # The wrapper for standard Ruby Syslog library.
   #
   class Logger
+    
+    #
+    # Syslog Message Severities
+    #
+    # 0  Emergency: system is unusable
+    # 1  Alert: action must be taken immediately
+    # 2  Critical: critical conditions
+    # 3  Error: error conditions
+    # 4  Warning: warning conditions
+    # 5  Notice: normal but significant condition
+    # 6  Informational: informational messages
+    # 7  Debug: debug-level messages
+    #
     SEVERITY = {
-      :crit    => 0,
-      :emerg   => 1,
-      :alert   => 2,
-      :err     => 3,
-      :warning => 4,
-      :notice  => 5,
-      :info    => 6,
-      :debug   => 7
+      :emerg   => Syslog::LOG_EMERG,
+      :alert   => Syslog::LOG_ALERT,
+      :crit    => Syslog::LOG_CRIT,
+      :err     => Syslog::LOG_ERR,
+      :warning => Syslog::LOG_WARNING,
+      :notice  => Syslog::LOG_NOTICE,
+      :info    => Syslog::LOG_INFO,
+      :debug   => Syslog::LOG_DEBUG
     }
     
+    #
+    # Syslog Message Facilities
+    #
+    #  0  kernel messages
+    #  1  user-level messages
+    #  2  mail system
+    #  3  system daemons
+    #  4  security/authorization messages
+    #  5  messages generated internally by syslogd
+    #  6  line printer subsystem
+    #  7  network news subsystem
+    #  8  UUCP subsystem
+    #  9  clock daemon
+    # 10  security/authorization messages
+    # 11  FTP daemon
+    # 12  NTP subsystem
+    # 13  log audit
+    # 14  log alert
+    # 15  clock daemon (note 2)
+    # 16  local use 0  (local0)
+    # 17  local use 1  (local1)
+    # 18  local use 2  (local2)
+    # 19  local use 3  (local3)
+    # 20  local use 4  (local4)
+    # 21  local use 5  (local5)
+    # 22  local use 6  (local6)
+    # 23  local use 7  (local7)
+    #           
     FACILITY = {
+      :kernel   => Syslog::LOG_KERN,
       :user     => Syslog::LOG_USER,
       :mail     => Syslog::LOG_MAIL,
       :daemon   => Syslog::LOG_DAEMON,
@@ -42,9 +84,9 @@ module Slogger
     # To build a Slogger::Logger instance.
     #
     # +app_name+::  The appliaction name to be logged
-    # +severity+::  The log severity: :crit, :emerg, :alert, :err, :warning, :notice,
+    # +severity+::  The log severity: :emerg, :alert, :crit, :err, :warning, :notice,
     #                 :info, or :debug. It can be changed at anytime.
-    # +facility+::  A typical syslog facility: :user, :mail, :daemon, :auth,
+    # +facility+::  A typical syslog facility: :kernel, :user, :mail, :daemon, :auth,
     #                 :syslog, :lpr, :news, :uucp, :cron, :authpriv, :ftp,
     #                 :local0, :local1, :local2, :local3, :local4, :local5,
     #                 :local6, or :local7
