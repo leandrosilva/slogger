@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), "..", "/spec_helper")
 
-describe Slogger::Logger do
-  subject { Slogger::Logger.new "test_app", :debug, :local0 }
+describe Slogger::CommonLogger do
+  subject { Slogger::CommonLogger.new "test_app", :debug, :local0 }
 
   describe "valid state" do
     it "should have an app_name attribute" do
@@ -19,23 +19,23 @@ describe Slogger::Logger do
   
   describe "invalid state" do
     it "should raise ArgumentError if doesn't have app_name" do
-      lambda { Slogger::Logger.new nil, :debug, :local0 }.should raise_error
+      lambda { Slogger::CommonLogger.new nil, :debug, :local0 }.should raise_error
     end
 
     it "should raise ArgumentError if doesn't have severity" do
-      lambda { Slogger::Logger.new "test_app", nil, :local0 }.should raise_error
+      lambda { Slogger::CommonLogger.new "test_app", nil, :local0 }.should raise_error
     end
 
     it "should raise ArgumentError if doesn't have facility" do
-      lambda { Slogger::Logger.new "test_app", :debug, nil }.should raise_error
+      lambda { Slogger::CommonLogger.new "test_app", :debug, nil }.should raise_error
     end
     
     it "should raise ArgumentError if severity level is invalid" do
-      lambda { Slogger::Logger.new "test_app", :junk, :local0 }.should raise_error
+      lambda { Slogger::CommonLogger.new "test_app", :junk, :local0 }.should raise_error
     end
     
     it "should raise ArgumentError if facility is invalid" do
-      lambda { Slogger::Logger.new "test_app", :describe, :junk }.should raise_error
+      lambda { Slogger::CommonLogger.new "test_app", :describe, :junk }.should raise_error
     end
   end
 
@@ -55,25 +55,22 @@ describe Slogger::Logger do
   
   describe "logging" do
     describe "when is in WARNING severity" do
-      subject { Slogger::Logger.new "test_app", :warning, :local0 }
+      subject { Slogger::CommonLogger.new "test_app", :warning, :local0 }
 
       it "should log WARNING messages" do
-        Syslog.should_receive(:warning).with(anything).and_return(Syslog)
-
+        Slogger::Logger.any_instance.should_receive(:notice).and_return(Syslog)
         subject.warning "WARNING message"
       end
     
       it "shouldn't log INFO messages" do
-        Syslog.should_not_receive(:info).and_return(Syslog)
-
+        Slogger::Logger.any_instance.should_not_receive(:info)
         subject.info "INFO message"
       end
       
       describe "but when severity is changed to INFO" do
         it "should log INFO messages" do
           subject.severity = :info
-
-          Syslog.should_receive(:info).and_return(Syslog)
+          Slogger::Logger.any_instance.should_receive(:info).and_return(Syslog)
           
           subject.info "INFO message"
         end

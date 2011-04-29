@@ -1,23 +1,24 @@
 module Slogger
   #
-  # An adapter to make possible to use Slogger in application which by default
-  # use standard Ruby Logger. It just exposes the same API of standard Logger.
+  # A delegate class to make possible to use Slogger in application which by
+  # default use standard Ruby Logger. It just exposes the same API of standard
+  # Ruby Logger class.
   #
-  module CommonLogger
+  class CommonLogger
     
     #
     # A bridge between standard Logger and Syslog
     #
     SEVERITY = {
-      :debug   => :debug,
-      :info    => :info,
-      :warning => :notice,
-      :error   => :warning
+      :unknow  => :alert,
       :fatal   => :err,
-      :unknow  => :alert
+      :error   => :warning,
+      :warning => :notice,
+      :info    => :info,
+      :debug   => :debug
     }
     
-    FACILITY = ::Slogger::FACILITY
+    FACILITY = ::Slogger::Logger::FACILITY
     
     attr_reader :app_name, :severity, :facility
 
@@ -44,17 +45,22 @@ module Slogger
       
       @app_name = app_name
       @severity = severity
-      @severity_as_int = SEVERITY[severity]
       @facility = facility
-      @facility_as_int = FACILITY[facility]
       
       @syslogger = ::Slogger::Logger.new @app_name, SEVERITY[@severity], @facility
     end
 
     SEVERITY.each_key do |severity|
       define_method severity do |message, &block|
-        @syslogger.send SEVERITY[severity], message, &block
+        @syslogger.send SEVERITY[severity], "StLg - #{message}", &block
       end
+    end
+    
+    def severity=(value)
+      raise_argument_error_to_invalid_parameter "severity", "SEVERITY" unless SEVERITY[value]
+      
+      @severity = value
+      @severity_as_int = SEVERITY[value]
     end
     
     def raise_argument_error_to_required_parameter(param)

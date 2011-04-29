@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     slogger (0.0.3)
+      slogger
 
 GEM
   remote: http://rubygems.org/
@@ -13,14 +14,14 @@ GEM
       git (>= 1.2.5)
       rake
     rake (0.8.7)
-    rspec (2.5.0)
-      rspec-core (~> 2.5.0)
-      rspec-expectations (~> 2.5.0)
-      rspec-mocks (~> 2.5.0)
-    rspec-core (2.5.1)
-    rspec-expectations (2.5.0)
+    rspec (2.6.0.rc2)
+      rspec-core (= 2.6.0.rc2)
+      rspec-expectations (= 2.6.0.rc2)
+      rspec-mocks (= 2.6.0.rc2)
+    rspec-core (2.6.0.rc2)
+    rspec-expectations (2.6.0.rc2)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.5.0)
+    rspec-mocks (2.6.0.rc2)
 
 PLATFORMS
   ruby
@@ -28,5 +29,5 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.0.0)
   jeweler (~> 1.5.2)
-  rspec
+  rspec (~> 2.6.0.rc2)
   slogger!
