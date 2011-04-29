@@ -1,4 +1,5 @@
 require "syslog"
+require "benchmark"
 
 require "slogger/base"
 require "slogger/logger"

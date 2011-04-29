@@ -115,14 +115,8 @@ module Slogger
       return if SYSLOG_SEVERITIES[severity] > @severity_as_int
 
       if block_given?
-        # TODO use Benchmark.measure
-        began_at = Time.now
-        
-        yield
-        
-        now = Time.now
-        end_at = now - began_at
-        message = "[#{end_at}s] #{message}"
+        benchmark = Benchmark.measure &block
+        message = "[time: #{benchmark.real}] #{message}"
       end
       
       Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send severity, message }
