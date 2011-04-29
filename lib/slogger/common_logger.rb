@@ -6,10 +6,19 @@ module Slogger
   #
   class CommonLogger < Base
     
-    #
-    # A bridge between standard Logger and Syslog
-    #
     SEVERITIES = {
+      :unknow  => Syslog::LOG_ALERT,
+      :fatal   => Syslog::LOG_ERR,
+      :error   => Syslog::LOG_WARNING,
+      :warning => Syslog::LOG_NOTICE,
+      :info    => Syslog::LOG_INFO,
+      :debug   => Syslog::LOG_DEBUG
+    }
+
+    #
+    # Bridge between standard Ruby Logger and Syslog
+    #
+    LOGGER_TO_SYSLOG_SEVERITIES = {
       :unknow  => :alert,
       :fatal   => :err,
       :error   => :warning,
@@ -17,8 +26,11 @@ module Slogger
       :info    => :info,
       :debug   => :debug
     }
-    
-    FACILITIES = ::Slogger::Logger::FACILITIES
+
+    #
+    # Just a little sugar
+    #
+    FACILITIES = ::Slogger::Base::SYSLOG_FACILITIES
     
     #
     # To build a Slogger::CommonLogger instance.
@@ -34,14 +46,12 @@ module Slogger
     # Raises an ArgumentError if app_name, severity, or facility is nil.
     #
     def initialize(app_name, severity, facility)
-      super app_name, severity, facility, self.class
-      
-      @syslogger = ::Slogger::Logger.new app_name, SEVERITIES[severity], facility
+      super app_name, severity, facility, SEVERITIES
     end
 
     SEVERITIES.each_key do |severity|
       define_method severity do |message, &block|
-        @syslogger.send SEVERITIES[severity], "StLg - #{message}", &block
+        log LOGGER_TO_SYSLOG_SEVERITIES[severity], message, &block
       end
     end
   end

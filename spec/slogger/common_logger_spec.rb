@@ -58,19 +58,22 @@ describe Slogger::CommonLogger do
       subject { Slogger::CommonLogger.new "test_app", :warning, :local0 }
 
       it "should log WARNING messages" do
-        Slogger::Logger.any_instance.should_receive(:notice).and_return(Syslog)
+        Syslog.should_receive(:notice).with(anything).and_return(Syslog)
+
         subject.warning "WARNING message"
       end
     
       it "shouldn't log INFO messages" do
-        Slogger::Logger.any_instance.should_not_receive(:info)
+        Syslog.should_not_receive(:info).with(anything).and_return(Syslog)
+
         subject.info "INFO message"
       end
       
       describe "but when severity is changed to INFO" do
         it "should log INFO messages" do
           subject.severity = :info
-          Slogger::Logger.any_instance.should_receive(:info).and_return(Syslog)
+          
+          Syslog.should_receive(:info).with(anything).and_return(Syslog)
           
           subject.info "INFO message"
         end

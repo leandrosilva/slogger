@@ -64,7 +64,7 @@ describe Slogger::Logger do
       end
     
       it "shouldn't log INFO messages" do
-        Syslog.should_not_receive(:info).and_return(Syslog)
+        Syslog.should_not_receive(:info).with(anything).and_return(Syslog)
 
         subject.info "INFO message"
       end
@@ -73,7 +73,7 @@ describe Slogger::Logger do
         it "should log INFO messages" do
           subject.severity = :info
 
-          Syslog.should_receive(:info).and_return(Syslog)
+          Syslog.should_receive(:info).with(anything).and_return(Syslog)
           
           subject.info "INFO message"
         end
