@@ -1,8 +1,15 @@
 module Slogger
   #
-  # A delegate class to make possible to use Slogger in application which by
-  # default use standard Ruby Logger. It just exposes the same API of standard
-  # Ruby Logger class.
+  # It just exposes Ruby's Syslog with the same API of Ruby's standard Logger class. So
+  # you can use it in a Rails application, for instance.
+  #
+  # For example, add the snippet below to the config/environments/developement.rb of an
+  # Rails application:
+  #
+  # config.log_level = :info
+  # config.logger = Slogger::CommonLogger.new "rappils", config.log_level, :local0
+  #
+  # That's all. The Rails application will log everything to the standard syslog.
   #
   class CommonLogger < Base
     

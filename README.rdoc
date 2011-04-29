@@ -44,6 +44,17 @@ Sample: message log preceded by spent time
 
   # and after, look at the syslog file of your SO  ;)
 
+=== Slogger::CommonLogger
+
+A useful class which exposes the Ruby's standard Syslog with the same API that
+Ruby's standard Logger to be used, for example, in Rails applications.
+
+Just add the snippet below to the config/environments/developement.rb of an Rails
+application and everything will be logged thru the Ruby's standard Syslog library:
+
+  config.log_level = :info
+  config.logger = Slogger::CommonLogger.new "rappils", config.log_level, :local0
+
 === Slogger::Rack::RequestLogger
 
 A Rack middleware to log incoming requests.
@@ -58,7 +69,7 @@ Sample:
   end
 
   # and after, look at the syslog file of your SO  ;)
-    
+
 == Future
 
 I don't know. I think in adding more stuff sometime in the future. Let's see.

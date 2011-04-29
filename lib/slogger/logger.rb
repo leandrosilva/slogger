@@ -2,6 +2,12 @@ module Slogger
   #
   # The wrapper for standard Ruby Syslog library.
   #
+  # Sample:
+  #
+  # slogger = Slogger::Logger.new "sample_app", :info, :local0 
+  # slogger.info "A good info"
+  # slogger.debug "A deep info (oops! it'll not be logged)"
+  #
   class Logger < Base
 
     #
