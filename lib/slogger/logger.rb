@@ -2,7 +2,7 @@ module Slogger
   #
   # The wrapper for standard Ruby Syslog library.
   #
-  class Logger
+  class Logger < Base
     
     #
     # Syslog Message Severities:
@@ -16,7 +16,7 @@ module Slogger
     # - Informational: informational messages
     # - Debug: debug-level messages
     #
-    SEVERITY = {
+    SEVERITIES = {
       :emerg   => Syslog::LOG_EMERG,
       :alert   => Syslog::LOG_ALERT,
       :crit    => Syslog::LOG_CRIT,
@@ -55,7 +55,7 @@ module Slogger
     # - local use 6  (local6)
     # - local use 7  (local7)
     #           
-    FACILITY = {
+    FACILITIES = {
       :kernel   => Syslog::LOG_KERN,
       :user     => Syslog::LOG_USER,
       :mail     => Syslog::LOG_MAIL,
@@ -78,8 +78,6 @@ module Slogger
       :local7   => Syslog::LOG_LOCAL7
     }
     
-    attr_reader :app_name, :severity, :facility
-
     #
     # To build a Slogger::Logger instance.
     #
@@ -94,37 +92,29 @@ module Slogger
     # Raises an ArgumentError if app_name, severity, or facility is nil.
     #
     def initialize(app_name, severity, facility)
-      raise_argument_error_to_required_parameter "app_name" unless app_name
-      raise_argument_error_to_required_parameter "severity" unless severity
-      raise_argument_error_to_required_parameter "facility" unless facility
+      super app_name, severity, facility, self.class
 
-      raise_argument_error_to_invalid_parameter "severity", "SEVERITY" unless SEVERITY[severity]
-      raise_argument_error_to_invalid_parameter "facility", "FACILITY" unless FACILITY[facility]
-      
-      @app_name = app_name
-      @severity = severity
-      @severity_as_int = SEVERITY[severity]
-      @facility = facility
-      @facility_as_int = FACILITY[facility]
+      @severity_as_int = SEVERITIES[severity]
+      @facility_as_int = FACILITIES[facility]
     end
     
-    SEVERITY.each_key do |severity|
+    SEVERITIES.each_key do |severity|
       define_method severity do |message, &block|
         log severity, message, &block
       end
     end
     
     def severity=(value)
-      raise_argument_error_to_invalid_parameter "severity", "SEVERITY" unless SEVERITY[value]
+      raise_argument_error_to_invalid_parameter "severity", "FACILITIES" unless @specialized_logger::SEVERITIES[value]
       
       @severity = value
-      @severity_as_int = SEVERITY[value]
+      @severity_as_int = SEVERITIES[value]
     end
     
     private
     
     def log(severity, message, &block)
-      return if SEVERITY[severity] > @severity_as_int
+      return if SEVERITIES[severity] > @severity_as_int
 
       if block_given?
         # TODO use Benchmark.measure
@@ -138,14 +128,6 @@ module Slogger
       end
       
       Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send severity, message }
-    end
-    
-    def raise_argument_error_to_required_parameter(param)
-      raise ArgumentError, "The '#{param}' parameter is required."
-    end
-
-    def raise_argument_error_to_invalid_parameter(param, options)
-      raise ArgumentError, "The '#{param}' parameter is invalid. Inspect the #{options} constant to know the options."
     end
   end
 end
