@@ -18,7 +18,7 @@ module Slogger
     #
     # Bridge between standard Ruby Logger and Syslog
     #
-    LOGGER_TO_SYSLOG_SEVERITIES = {
+    BRIDGE_SEVERITIES = {
       :unknow  => :emerg,
       :fatal   => :alert,
       :error   => :err,
@@ -51,7 +51,7 @@ module Slogger
 
     SEVERITIES.each_key do |severity|
       define_method severity do |message, &block|
-        log LOGGER_TO_SYSLOG_SEVERITIES[severity], message, &block
+        log BRIDGE_SEVERITIES[severity], message, &block
       end
     end
   end
