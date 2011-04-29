@@ -57,8 +57,26 @@ describe Slogger::CommonLogger do
     describe "when is in WARNING severity" do
       subject { Slogger::CommonLogger.new "test_app", :warning, :local0 }
 
+      it "should log UNKNOW messages" do
+        Syslog.should_receive(:emerg).with(anything).and_return(Syslog)
+
+        subject.unknow "UNKNOW message"
+      end
+
+      it "should log FATAL messages" do
+        Syslog.should_receive(:alert).with(anything).and_return(Syslog)
+
+        subject.fatal "FATAL message"
+      end
+      
+      it "should log ERROR messages" do
+        Syslog.should_receive(:err).with(anything).and_return(Syslog)
+
+        subject.error "ERROR message"
+      end
+
       it "should log WARNING messages" do
-        Syslog.should_receive(:notice).with(anything).and_return(Syslog)
+        Syslog.should_receive(:warning).with(anything).and_return(Syslog)
 
         subject.warning "WARNING message"
       end

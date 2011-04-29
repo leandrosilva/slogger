@@ -7,10 +7,10 @@ module Slogger
   class CommonLogger < Base
     
     SEVERITIES = {
-      :unknow  => Syslog::LOG_ALERT,
-      :fatal   => Syslog::LOG_ERR,
-      :error   => Syslog::LOG_WARNING,
-      :warning => Syslog::LOG_NOTICE,
+      :unknow  => Syslog::LOG_EMERG,
+      :fatal   => Syslog::LOG_ALERT,
+      :error   => Syslog::LOG_ERR,
+      :warning => Syslog::LOG_WARNING,
       :info    => Syslog::LOG_INFO,
       :debug   => Syslog::LOG_DEBUG
     }
@@ -19,10 +19,10 @@ module Slogger
     # Bridge between standard Ruby Logger and Syslog
     #
     LOGGER_TO_SYSLOG_SEVERITIES = {
-      :unknow  => :alert,
-      :fatal   => :err,
-      :error   => :warning,
-      :warning => :notice,
+      :unknow  => :emerg,
+      :fatal   => :alert,
+      :error   => :err,
+      :warning => :warning,
       :info    => :info,
       :debug   => :debug
     }
