@@ -26,7 +26,7 @@ module Slogger
     end
 
     def severity=(value)
-      raise_argument_error_to_invalid_parameter "severity", "FACILITIES" unless @specialized_logger::SEVERITIES[value]
+      raise_argument_error_to_invalid_parameter "severity", "SEVERITIES" unless @specialized_logger::SEVERITIES[value]
       
       @severity = value
     end
