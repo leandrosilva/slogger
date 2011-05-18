@@ -12,7 +12,7 @@ module Slogger
   # That's all. The Rails application will log everything to the standard syslog.
   #
   class CommonLogger < Base
-    
+
     SEVERITIES = {
       :unknow  => Syslog::LOG_EMERG,
       :fatal   => Syslog::LOG_ALERT,
@@ -38,7 +38,7 @@ module Slogger
     # Just a little sugar
     #
     FACILITIES = ::Slogger::Base::SYSLOG_FACILITIES
-    
+
     #
     # To build a Slogger::CommonLogger instance.
     #
@@ -59,6 +59,10 @@ module Slogger
     SEVERITIES.each_key do |severity|
       define_method severity do |message, &block|
         log BRIDGE_SEVERITIES[severity], message, &block
+      end
+
+      define_method "#{severity}?" do
+        severity >= @severity
       end
     end
   end
