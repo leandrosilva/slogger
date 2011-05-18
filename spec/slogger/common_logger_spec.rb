@@ -7,16 +7,16 @@ describe Slogger::CommonLogger do
     it "should have an app_name attribute" do
       subject.app_name.should == "test_app"
     end
-    
+
     it "should have a severity attribute" do
       subject.severity.should == :debug
     end
-    
+
     it "should have a facility attribute" do
       subject.facility.should == :local0
     end
   end
-  
+
   describe "invalid state" do
     it "should raise ArgumentError if doesn't have app_name" do
       lambda { Slogger::CommonLogger.new nil, :debug, :local0 }.should raise_error
@@ -29,11 +29,11 @@ describe Slogger::CommonLogger do
     it "should raise ArgumentError if doesn't have facility" do
       lambda { Slogger::CommonLogger.new "test_app", :debug, nil }.should raise_error
     end
-    
+
     it "should raise ArgumentError if severity level is invalid" do
       lambda { Slogger::CommonLogger.new "test_app", :junk, :local0 }.should raise_error
     end
-    
+
     it "should raise ArgumentError if facility is invalid" do
       lambda { Slogger::CommonLogger.new "test_app", :describe, :junk }.should raise_error
     end
@@ -47,12 +47,12 @@ describe Slogger::CommonLogger do
       subject.severity = :info
       subject.severity.should be :info
     end
-      
+
     it "should raise ArgumentError if try to change severity attribute to a invalid one" do
       lambda { subject.severity = :junk }.should raise_error
     end
   end
-  
+
   describe "logging" do
     describe "when is in WARNING severity" do
       subject { Slogger::CommonLogger.new "test_app", :warning, :local0 }
@@ -68,7 +68,7 @@ describe Slogger::CommonLogger do
 
         subject.fatal "FATAL message"
       end
-      
+
       it "should log ERROR messages" do
         Syslog.should_receive(:err).with(anything).and_return(Syslog)
 
@@ -80,19 +80,19 @@ describe Slogger::CommonLogger do
 
         subject.warning "WARNING message"
       end
-    
+
       it "shouldn't log INFO messages" do
         Syslog.should_not_receive(:info).with(anything).and_return(Syslog)
 
         subject.info "INFO message"
       end
-      
+
       describe "but when severity is changed to INFO" do
         it "should log INFO messages" do
           subject.severity = :info
-          
+
           Syslog.should_receive(:info).with(anything).and_return(Syslog)
-          
+
           subject.info "INFO message"
         end
       end
@@ -104,6 +104,21 @@ describe Slogger::CommonLogger do
           sleep(2)
         end
       end
+    end
+  end
+
+  describe "severity appliance checking" do
+    it "should validate appliance for selected severity" do
+      subject.debug?.should be_true
+    end
+
+    it "should validate appliance for less restrict severities" do
+      subject.error?.should be_true
+    end
+
+    it "should invalidate appliance for more restrict severities" do
+      subject.severity = :info
+      subject.debug?.should be_false
     end
   end
 end
