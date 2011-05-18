@@ -62,7 +62,7 @@ module Slogger
       end
 
       define_method "#{severity}?" do
-        severity >= @severity
+        SEVERITIES[severity] <= SEVERITIES[@severity]
       end
     end
   end
