@@ -12,14 +12,14 @@ module Slogger
   # That's all. The Rails application will log everything to the standard syslog.
   #
   class CommonLogger < Base
-
+    
     SEVERITIES = {
-      :unknow  => Syslog::LOG_EMERG,
-      :fatal   => Syslog::LOG_ALERT,
-      :error   => Syslog::LOG_ERR,
-      :warning => Syslog::LOG_WARNING,
+      :emerg   => Syslog::LOG_EMERG,
+      :alert   => Syslog::LOG_ALERT,
+      :err     => Syslog::LOG_ERR,
       :info    => Syslog::LOG_INFO,
-      :debug   => Syslog::LOG_DEBUG
+      :debug   => Syslog::LOG_DEBUG,
+      :warn    => Syslog::LOG_WARNING,
     }
 
     #
@@ -29,7 +29,7 @@ module Slogger
       :unknow  => :emerg,
       :fatal   => :alert,
       :error   => :err,
-      :warning => :warning,
+      :warn    => :warning,
       :info    => :info,
       :debug   => :debug
     }
@@ -44,7 +44,7 @@ module Slogger
     #
     # +app_name+::  The appliaction name to be logged
     # +severity+::  The log severity (according to standard Ruby Logger): :unknow, :fatal,
-    #                 :error, :warning, :info, or :debug. It can be changed at anytime.
+    #                 :error, :warn, :info, or :debug. It can be changed at anytime.
     # +facility+::  A typical syslog facility: :kernel, :user, :mail, :daemon, :auth,
     #                 :syslog, :lpr, :news, :uucp, :cron, :authpriv, :ftp,
     #                 :local0, :local1, :local2, :local3, :local4, :local5,
@@ -55,14 +55,26 @@ module Slogger
     def initialize(app_name, severity, facility)
       super app_name, severity, facility, SEVERITIES
     end
-
-    SEVERITIES.each_key do |severity|
-      define_method severity do |message, &block|
+    
+    def log(severity, message = nil, &block)
+      if block_given? and message != nil
+        super(severity, message, &block)
+      else
+        super(severity, (message || (block_given? && block.call) || @app_name), &nil)
+      end
+    end
+    
+    def add(severity, message = nil, &block)
+      log(BRIDGE_SEVERITIES[severity], message, &block)
+    end
+    
+    BRIDGE_SEVERITIES.each_key do |severity|
+      define_method severity do |message = nil, &block|
         log BRIDGE_SEVERITIES[severity], message, &block
       end
 
       define_method "#{severity}?" do
-        SEVERITIES[severity] <= SEVERITIES[@severity]
+        SEVERITIES[BRIDGE_SEVERITIES[severity]] <= SEVERITIES[BRIDGE_SEVERITIES[@severity]]
       end
     end
   end
