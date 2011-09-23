@@ -58,13 +58,13 @@ describe Slogger::Logger do
       subject { Slogger::Logger.new "test_app", :warning, :local0 }
 
       it "should log WARNING messages" do
-        Syslog.should_receive(:warning).with(anything).and_return(Syslog)
+        Syslog.should_receive(:warning).with('%s',anything).and_return(Syslog)
 
         subject.warning "WARNING message"
       end
     
       it "shouldn't log INFO messages" do
-        Syslog.should_not_receive(:info).with(anything).and_return(Syslog)
+        Syslog.should_not_receive(:info).with('%s',anything).and_return(Syslog)
 
         subject.info "INFO message"
       end
@@ -73,7 +73,7 @@ describe Slogger::Logger do
         it "should log INFO messages" do
           subject.severity = :info
 
-          Syslog.should_receive(:info).with(anything).and_return(Syslog)
+          Syslog.should_receive(:info).with('%s',anything).and_return(Syslog)
           
           subject.info "INFO message"
         end

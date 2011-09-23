@@ -60,41 +60,41 @@ describe Slogger::CommonLogger do
       it { should respond_to(:add) }
       
       it "should log ERROR messsages with the add method" do
-        Syslog.should_receive(:err).with('ERROR message').and_return(Syslog)
+        Syslog.should_receive(:err).with('%s','ERROR message').and_return(Syslog)
         subject.add(:error, 'ERROR message')
       end
       
       it "should log UNKNOW messages" do
-        Syslog.should_receive(:emerg).with(anything).and_return(Syslog)
+        Syslog.should_receive(:emerg).with('%s',anything).and_return(Syslog)
 
         subject.unknow "UNKNOW message"
       end
 
       it "should log FATAL messages" do
-        Syslog.should_receive(:alert).with(anything).and_return(Syslog)
+        Syslog.should_receive(:alert).with('%s',anything).and_return(Syslog)
 
         subject.fatal "FATAL message"
       end
 
       it "should log ERROR messages" do
-        Syslog.should_receive(:err).with(anything).and_return(Syslog)
+        Syslog.should_receive(:err).with('%s',anything).and_return(Syslog)
 
         subject.error "ERROR message"
       end
       
       it "should log WARN messsages with the add method to the WARNING severity" do
-        Syslog.should_receive(:warning).with('WARN message').and_return(Syslog)
+        Syslog.should_receive(:warning).with('%s','WARN message').and_return(Syslog)
         subject.add(:warn, 'WARN message')
       end
       
       it "should log WARN messages to the WARNING severity" do        
-        Syslog.should_receive(:warning).with(anything).and_return(Syslog)
+        Syslog.should_receive(:warning).with('%s',anything).and_return(Syslog)
 
         subject.warn "WARN message"
       end
 
       it "shouldn't log INFO messages" do
-        Syslog.should_not_receive(:info).with(anything).and_return(Syslog)
+        Syslog.should_not_receive(:info).with('%s',anything).and_return(Syslog)
 
         subject.info "INFO message"
       end
@@ -103,7 +103,7 @@ describe Slogger::CommonLogger do
         it "should log INFO messages" do
           subject.severity = :info
 
-          Syslog.should_receive(:info).with(anything).and_return(Syslog)
+          Syslog.should_receive(:info).with('%s',anything).and_return(Syslog)
 
           subject.info "INFO message"
         end
@@ -117,7 +117,7 @@ describe Slogger::CommonLogger do
         messenger = mock('messenger')
         messenger.should_receive(:message).and_return('this is a message %{name}')
         
-        Syslog.should_receive(:info).with('this is a message logger').and_return(Syslog)
+        Syslog.should_receive(:info).with('%s','this is a message logger').and_return(Syslog)
         
         subject.info { messenger.message % {:name => 'logger'} }
       end
@@ -125,7 +125,7 @@ describe Slogger::CommonLogger do
     
     describe "when a block is passed to log method" do
       it "should add spent time to the message" do
-        Syslog.should_receive(:info).with(/\[time: [0-9.]+\] a block wrapped by log/)
+        Syslog.should_receive(:info).with('%s',/\[time: [0-9.]+\] a block wrapped by log/)
         
         subject.info "a block wrapped by log" do
           sleep(1)

@@ -119,7 +119,7 @@ module Slogger
         message = "[time: #{benchmark.real}] #{message}"
       end
       
-      Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send severity, message }
+      Syslog.open(@app_name, Syslog::LOG_PID, @facility_as_int) { |s| s.send severity, '%s', message }
     end
 
     def raise_argument_error_to_required_parameter(param)
