@@ -75,6 +75,18 @@ module Slogger
       :local7   => Syslog::LOG_LOCAL7
     }
 
+    # Translation from Syslog severity levels to ruby's standard logger levels
+    RUBY_STANDARD_LEVELS = Hash.new(5).merge({
+      :debug    => 0, # Logger::DEBUG
+      :info     => 1, # Logger::INFO
+      :warning  => 2, # Logger::WARN
+      :err      => 3, # Logger::ERROR
+      :emerg    => 4, # Logger::FATAL
+      :alert    => 4, # Logger::FATAL
+      :crit     => 4  # Logger::FATAL
+      # all other severities => Logger::UNKNOWN
+    })
+
     attr_reader :app_name, :severity, :facility
     
     #
@@ -102,6 +114,10 @@ module Slogger
       @facility = facility
       @facility_as_int = SYSLOG_FACILITIES[facility]
       @custom_severity_levels = custom_severity_levels
+    end
+
+    def level
+      RUBY_STANDARD_LEVELS[severity]
     end
 
     def severity=(value)
