@@ -1,3 +1,5 @@
+require 'logger'
+
 module Slogger
   #
   # It just exposes Ruby's Syslog with the same API of Ruby's standard Logger class. So
@@ -12,7 +14,7 @@ module Slogger
   # That's all. The Rails application will log everything to the standard syslog.
   #
   class CommonLogger < Base
-    
+
     SEVERITIES = {
       :emerg   => Syslog::LOG_EMERG,
       :alert   => Syslog::LOG_ALERT,
@@ -55,7 +57,7 @@ module Slogger
     def initialize(app_name, severity, facility)
       super app_name, severity, facility, SEVERITIES
     end
-    
+
     def log(severity, message = nil, &block)
       if block_given? and message != nil
         super(severity, message, &block)
@@ -63,11 +65,17 @@ module Slogger
         super(severity, (message || (block_given? && block.call) || @app_name), &nil)
       end
     end
-    
-    def add(severity, message = nil, &block)
-      log(BRIDGE_SEVERITIES[severity], message, &block)
+
+    def add(severity, message = nil, progname = nil, &block)
+      (BRIDGE_SEVERITIES.keys - [:unknow]).each do |key|
+        if ::Logger.const_get(key.to_s.upcase) == severity
+          return log(BRIDGE_SEVERITIES[key], message, &block)
+        end
+      end
+
+      log(BRIDGE_SEVERITIES[:unkown], message, &block)
     end
-    
+
     BRIDGE_SEVERITIES.each_key do |severity|
       define_method severity do |message = nil, &block|
         log BRIDGE_SEVERITIES[severity], message, &block
