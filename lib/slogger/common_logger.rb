@@ -21,7 +21,7 @@ module Slogger
       :err     => Syslog::LOG_ERR,
       :info    => Syslog::LOG_INFO,
       :debug   => Syslog::LOG_DEBUG,
-      :warn    => Syslog::LOG_WARNING,
+      :warning => Syslog::LOG_WARNING,
     }
 
     #
@@ -55,7 +55,7 @@ module Slogger
     # Raises an ArgumentError if app_name, severity, or facility is nil.
     #
     def initialize(app_name, severity, facility)
-      super app_name, severity, facility, SEVERITIES
+      super app_name, BRIDGE_SEVERITIES[severity], facility, SEVERITIES
     end
 
     def log(severity, message = nil, &block)
@@ -64,6 +64,18 @@ module Slogger
       else
         super(severity, (message || (block_given? && block.call) || @app_name), &nil)
       end
+    end
+
+    def level
+      ::Logger.const_get(BRIDGE_SEVERITIES.rassoc(@severity)[0].to_s.upcase)
+    end
+
+    def severity
+      BRIDGE_SEVERITIES.rassoc(@severity)[0]
+    end
+
+    def severity=(value)
+      super(BRIDGE_SEVERITIES[value])
     end
 
     def add(severity, message = nil, progname = nil, &block)
@@ -82,7 +94,7 @@ module Slogger
       end
 
       define_method "#{severity}?" do
-        SEVERITIES[BRIDGE_SEVERITIES[severity]] <= SEVERITIES[BRIDGE_SEVERITIES[@severity]]
+        SEVERITIES[BRIDGE_SEVERITIES[severity]] <= SEVERITIES[@severity]
       end
     end
   end

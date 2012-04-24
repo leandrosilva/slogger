@@ -17,6 +17,23 @@ describe Slogger::CommonLogger do
     end
   end
 
+  describe "#level" do
+    mappings = {
+      :debug => Logger::DEBUG,
+      :info => Logger::INFO,
+      :warn => Logger::WARN,
+      :error => Logger::ERROR,
+      :fatal => Logger::FATAL
+    }
+
+    mappings.each_pair do |key, value|
+      it "should map #{key.inspect} to #{value}" do
+        logger = Slogger::CommonLogger.new "test_app", key, :local0
+        logger.level.should == value
+      end
+    end
+  end
+
   describe "invalid state" do
     it "should raise ArgumentError if doesn't have app_name" do
       lambda { Slogger::CommonLogger.new nil, :debug, :local0 }.should raise_error
