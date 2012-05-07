@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), "..", "/spec_helper")
 
 describe Slogger::CommonLogger do
   subject { Slogger::CommonLogger.new "test_app", :debug, :local0 }
-    
+
   describe "valid state" do
     it "should have an app_name attribute" do
       subject.app_name.should == "test_app"
@@ -56,14 +56,14 @@ describe Slogger::CommonLogger do
   describe "logging" do
     describe "when is in WARN severity" do
       subject { Slogger::CommonLogger.new "test_app", :warn, :local0 }
-      
+
       it { should respond_to(:add) }
-      
+
       it "should log ERROR messsages with the add method" do
         Syslog.should_receive(:err).with('%s','ERROR message').and_return(Syslog)
-        subject.add(:error, 'ERROR message')
+        subject.add(::Logger::ERROR, 'ERROR message')
       end
-      
+
       it "should log UNKNOW messages" do
         Syslog.should_receive(:emerg).with('%s',anything).and_return(Syslog)
 
@@ -81,15 +81,14 @@ describe Slogger::CommonLogger do
 
         subject.error "ERROR message"
       end
-      
+
       it "should log WARN messsages with the add method to the WARNING severity" do
         Syslog.should_receive(:warning).with('%s','WARN message').and_return(Syslog)
-        subject.add(:warn, 'WARN message')
+        subject.add(::Logger::WARN, 'WARN message')
       end
-      
-      it "should log WARN messages to the WARNING severity" do        
-        Syslog.should_receive(:warning).with('%s',anything).and_return(Syslog)
 
+      it "should log WARN messages to the WARNING severity" do
+        Syslog.should_receive(:warning).with('%s',anything).and_return(Syslog)
         subject.warn "WARN message"
       end
 
@@ -109,24 +108,21 @@ describe Slogger::CommonLogger do
         end
       end
     end
-    
+
     describe "when no message is passed to the log method" do
       it "should use the block to form the message" do
         subject.severity = :info
-        
+
         messenger = mock('messenger')
         messenger.should_receive(:message).and_return('this is a message %{name}')
-        
         Syslog.should_receive(:info).with('%s','this is a message logger').and_return(Syslog)
-        
         subject.info { messenger.message % {:name => 'logger'} }
       end
     end
-    
+
     describe "when a block is passed to log method" do
       it "should add spent time to the message" do
         Syslog.should_receive(:info).with('%s',/\[time: [0-9.]+\] a block wrapped by log/)
-        
         subject.info "a block wrapped by log" do
           sleep(1)
         end
