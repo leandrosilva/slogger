@@ -131,9 +131,9 @@ describe Slogger::CommonLogger do
         subject.severity = :info
 
         messenger = mock('messenger')
-        messenger.should_receive(:message).and_return('this is a message %{name}')
+        messenger.should_receive(:message).and_return('this is a message %s')
         Syslog.should_receive(:info).with('%s','this is a message logger').and_return(Syslog)
-        subject.info { messenger.message % {:name => 'logger'} }
+        subject.info { messenger.message % ('logger') }
       end
     end
 

@@ -67,11 +67,11 @@ module Slogger
     end
 
     def level
-      ::Logger.const_get(BRIDGE_SEVERITIES.rassoc(@severity)[0].to_s.upcase)
+      ::Logger.const_get(BRIDGE_SEVERITIES.to_a.rassoc(@severity)[0].to_s.upcase)
     end
 
     def severity
-      BRIDGE_SEVERITIES.rassoc(@severity)[0]
+      BRIDGE_SEVERITIES.to_a.rassoc(@severity)[0]
     end
 
     def severity=(value)
@@ -89,7 +89,8 @@ module Slogger
     end
 
     BRIDGE_SEVERITIES.each_key do |severity|
-      define_method severity do |message = nil, &block|
+      define_method severity do |*args, &block|
+        message = args.at(0)
         log BRIDGE_SEVERITIES[severity], message, &block
       end
 
