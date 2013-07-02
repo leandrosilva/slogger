@@ -41,6 +41,9 @@ module Slogger
     #
     FACILITIES = ::Slogger::Base::SYSLOG_FACILITIES
 
+    # For Rails/ActiveSupport 4 compatibility
+    attr_reader :formatter
+
     #
     # To build a Slogger::CommonLogger instance.
     #
@@ -56,6 +59,7 @@ module Slogger
     #
     def initialize(app_name, severity, facility)
       super app_name, BRIDGE_SEVERITIES[severity], facility, SEVERITIES
+      @formatter = ::Logger::Formatter.new
     end
 
     def log(severity, message = nil, &block)
