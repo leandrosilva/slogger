@@ -3,6 +3,12 @@ require File.join(File.dirname(__FILE__), "..", "/spec_helper")
 describe Slogger::CommonLogger do
   subject { Slogger::CommonLogger.new "test_app", :debug, :local0 }
 
+  describe "#formatter" do
+    it "should respond to #formatter" do
+      subject.should respond_to(:formatter)
+    end
+  end
+
   describe "valid state" do
     it "should have an app_name attribute" do
       subject.app_name.should == "test_app"
