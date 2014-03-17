@@ -109,9 +109,9 @@ module Slogger
 
     def severity=(value)
       raise_argument_error_to_invalid_parameter "severity", "SEVERITIES" unless @custom_severity_levels[value]
-      
+
       @severity = value
-      @severity_as_int = @custom_severity_levels[severity]
+      @severity_as_int = @custom_severity_levels[@severity]
     end
 
     def log(severity, message, &block)
