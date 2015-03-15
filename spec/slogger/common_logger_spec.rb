@@ -74,6 +74,11 @@ describe Slogger::CommonLogger do
     it "should raise ArgumentError if try to change severity attribute to a invalid one" do
       lambda { subject.severity = :junk }.should raise_error
     end
+
+    it "should still log after severity is set to warn" do
+      subject.severity = :warn
+      expect { subject.debug("Hello Logs!") }.not_to raise_error
+    end
   end
 
   describe "logging" do
