@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/leandrosilva/slogger"
   s.summary     = %Q{Slogger is a Ruby library to help work with standard Ruby Syslog library.}
   s.description = %Q{Slogger is a Ruby library to help work with standard Ruby Syslog library. Yeah! Just it.}
+  s.license     = "MIT"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
